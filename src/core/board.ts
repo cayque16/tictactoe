@@ -56,4 +56,11 @@ export default class Board {
     private boardIsFull(): boolean {
         return this._board.every(cell => cell === this._player1 || cell === this._player2);
     }
+
+    printBoard(clearConsole = true): void {
+        if (clearConsole) console.clear();
+        for (let i = 0; i < this._board.length; i += 3) {
+            console.log(this._board.slice(i, i + 3).join(' | '))
+        }
+    }
 }
