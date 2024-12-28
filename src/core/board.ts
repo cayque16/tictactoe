@@ -1,3 +1,4 @@
+import { Results } from "./enums/result";
 import Coordinate from "./value-object/coordinate";
 
 export default class Board {
@@ -28,5 +29,31 @@ export default class Board {
 
     positionIsEmpty(position: Coordinate): boolean {
         return this._board[position.position] === ' ';
+    }
+
+    checkResult(): Results {
+        const winCombinations = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], //lines
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], //columns
+            [0, 4, 8], [2, 4, 6], //diagonals
+        ];
+
+        const checkWin = (player: string) => {
+            return winCombinations.some(combination =>
+                combination.every(index => this._board[index] === player)
+            )
+        }
+
+        if (checkWin(this._player1))
+            return Results.PLAYER_ONE_WINS
+        if (checkWin(this._player2))
+            return Results.PLAYER_TWO_WINS
+        if (this.boardIsFull())
+            return Results.DRAW
+        return Results.GAME_IN_PROGRESS
+    }
+
+    private boardIsFull(): boolean {
+        return this._board.every(cell => cell === this._player1 || cell === this._player2);
     }
 }
