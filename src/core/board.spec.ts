@@ -1,5 +1,6 @@
 import Board from "./board";
 import { Results } from "./enums/result";
+import PlayerInterface from "./player/player.interface";
 import Coordinate from "./value-object/coordinate";
 
 jest.mock('./value-object/coordinate', () => {
@@ -12,25 +13,47 @@ jest.mock('./value-object/coordinate', () => {
     });
 })
 
+const playerMock1: jest.Mocked<PlayerInterface> = {
+    symbol: 'X',
+    playedCoordinates: [],
+
+    myPlay: jest.fn(),
+    validate: jest.fn(),
+    saveLastCoord: jest.fn(),
+}
+
+const playerMock2: jest.Mocked<PlayerInterface> = {
+    symbol: 'O',
+    playedCoordinates: [],
+
+    myPlay: jest.fn(),
+    validate: jest.fn(),
+    saveLastCoord: jest.fn(),
+}
+
 describe("Board unit tests", () => {
     it("should return true when a square is empty", () => {
-        const board = new Board();
+        const board = new Board(playerMock1, playerMock2);
         const coord = new Coordinate(1);
         expect(board.positionIsEmpty(coord)).toBe(true);
     })
 
     it("should return false when a square is not empty", () => {
-        const board = new Board();
+        const board = new Board(playerMock1, playerMock2);
         const coord = new Coordinate(1);
         board.toPlay(coord);
         expect(board.positionIsEmpty(coord)).toBe(false);
     })
 
     it("should throw error if position already marked", () => {
-        const board = new Board();
+        const board = new Board(playerMock1, playerMock2);
         const coord = new Coordinate(1);
         board.toPlay(coord);
         expect(() => board.toPlay(coord)).toThrow("Position already marked");
+    })
+
+    it("should throw error if player1 and player2 have the same symbols", () => {
+        expect(() => new Board(playerMock1, playerMock1)).toThrow("Both players must have different symbols");
     })
 
     const movesToPlayer1Win = [
@@ -45,7 +68,7 @@ describe("Board unit tests", () => {
     ]
 
     it.each(movesToPlayer1Win)("should indicate player 1 as the winner", (move1, move2, move3, move4, move5) => {
-        const board = new Board();
+        const board = new Board(playerMock1, playerMock2);
         board.toPlay(new Coordinate(move1));
         expect(board.checkResult()).toBe(Results.GAME_IN_PROGRESS);
         board.toPlay(new Coordinate(move2));
@@ -70,7 +93,7 @@ describe("Board unit tests", () => {
     ]
 
     it.each(movesToPlayer2Win)("should indicate player 2 as the winner", (move1, move2, move3, move4, move5, move6) => {
-        const board = new Board();
+        const board = new Board(playerMock1, playerMock2);
         board.toPlay(new Coordinate(move1));
         expect(board.checkResult()).toBe(Results.GAME_IN_PROGRESS);
         board.toPlay(new Coordinate(move2));
@@ -86,7 +109,7 @@ describe("Board unit tests", () => {
     })
 
     it("should indicate a draw", () => {
-        const board = new Board();
+        const board = new Board(playerMock1, playerMock2);
         board.toPlay(new Coordinate(1));
         expect(board.checkResult()).toBe(Results.GAME_IN_PROGRESS);
         board.toPlay(new Coordinate(3));
