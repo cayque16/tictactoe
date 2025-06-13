@@ -19,3 +19,6 @@ O [MiniMax](https://pt.wikipedia.org/wiki/Minimax) é um algoritmo utilizado em 
 - **TypeScript**: Linguagem principal utilizada no desenvolvimento.
 - **Jest**: Framework de testes unitários.
 - **Shell Script**: Para automação de tarefas (arquivo `stack.sh`).
+
+
+> ℹ️ **Este README foi gerado com o auxílio de inteligência artificial (ChatGPT — OpenAI)
